@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{5E3B232D-01AF-455D-AC8C-475A7E1ADC22}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Demo\DemoRscDbSearchCheckListBox.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Componente\Pacote\RscDbSearchCheckListBox.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DemoRscDbSearchCheckListBox">
+        <MSBuild Projects="Demo\DemoRscDbSearchCheckListBox.dproj"/>
+    </Target>
+    <Target Name="DemoRscDbSearchCheckListBox:Clean">
+        <MSBuild Projects="Demo\DemoRscDbSearchCheckListBox.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DemoRscDbSearchCheckListBox:Make">
+        <MSBuild Projects="Demo\DemoRscDbSearchCheckListBox.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RscDbSearchCheckListBox">
+        <MSBuild Projects="Componente\Pacote\RscDbSearchCheckListBox.dproj"/>
+    </Target>
+    <Target Name="RscDbSearchCheckListBox:Clean">
+        <MSBuild Projects="Componente\Pacote\RscDbSearchCheckListBox.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RscDbSearchCheckListBox:Make">
+        <MSBuild Projects="Componente\Pacote\RscDbSearchCheckListBox.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DemoRscDbSearchCheckListBox;RscDbSearchCheckListBox"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DemoRscDbSearchCheckListBox:Clean;RscDbSearchCheckListBox:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DemoRscDbSearchCheckListBox:Make;RscDbSearchCheckListBox:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
