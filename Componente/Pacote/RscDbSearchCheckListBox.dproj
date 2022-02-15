@@ -160,6 +160,7 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
+        <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="..\Fontes\uRscDbSearchCheckListBox.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

@@ -31,7 +31,8 @@ requires
   rtl,
   vcl,
   dbrtl,
-  vcldb;
+  vcldb,
+  vclx;
 
 contains
   uRscDbSearchCheckListBox in '..\Fontes\uRscDbSearchCheckListBox.pas';
