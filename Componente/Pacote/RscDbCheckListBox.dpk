@@ -1,4 +1,4 @@
-package RscDbSearchCheckListBox;
+package RscDbCheckListBox;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -35,6 +35,6 @@ requires
   vclx;
 
 contains
-  uRscDbSearchCheckListBox in '..\Fontes\uRscDbSearchCheckListBox.pas';
+  uRscDbCheckListBox in '..\Fontes\uRscDbCheckListBox.pas';
 
 end.

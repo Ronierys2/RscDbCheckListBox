@@ -74,10 +74,10 @@ object Form1: TForm1
       ParentFont = False
       OnClick = SpeedButton1Click
     end
-    object RscDbSearchCheckListBox1: TRscDbSearchCheckListBox
+    object RscDbCheckListBox1: TRscDbCheckListBox
       Left = 16
       Top = 27
-      Width = 169
+      Width = 121
       Height = 21
       DataField = 'CITY'
       DataSource = DsCidades
@@ -88,18 +88,27 @@ object Form1: TForm1
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
-    object RscDbSearchCheckListBox2: TRscDbSearchCheckListBox
+    object RscDbCheckListBox2: TRscDbCheckListBox
       Left = 208
-      Top = 30
-      Width = 186
+      Top = 27
+      Width = 121
       Height = 21
       DataField = 'CUSTOMER'
       DataSource = DsClientes
       DataFieldSeparador = ','
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clNavy
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
-      Text = 'RscDbSearchCheckListBox2'
     end
   end
   object FDConnection1: TFDConnection
@@ -138,20 +147,22 @@ object Form1: TForm1
     Top = 144
   end
   object FDQCidades: TFDQuery
+    Active = True
     Connection = FDConnection1
     SQL.Strings = (
       'SELECT r.CITY'
       'FROM CUSTOMER r'
       'GROUP BY r.CITY')
-    Left = 64
-    Top = 168
+    Left = 320
+    Top = 200
   end
   object DsCidades: TDataSource
     DataSet = FDQCidades
-    Left = 64
-    Top = 216
+    Left = 320
+    Top = 248
   end
   object FDQClientes: TFDQuery
+    Active = True
     Connection = FDConnection1
     SQL.Strings = (
       'SELECT r.CUSTOMER'

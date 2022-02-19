@@ -18,7 +18,7 @@
 {=======================================}
 
 
-unit uRscDbSearchCheckListBox;
+unit uRscDbCheckListBox;
 
 interface
 
@@ -41,7 +41,7 @@ uses
   Data.DB;
 
 type
-  TRscDbSearchCheckListBox = class(TCustomEdit)
+  TRscDbCheckListBox = class(TCustomEdit)
   private
     { Private declarations }
     FFieldDataLink      : TFieldDataLink;
@@ -57,11 +57,16 @@ type
     procedure SetDataFieldSeparador(const Value: char);
     procedure SetDataSource(const Value: TDataSource);
 
+
+
     { Ações Botão Pesquisa no Edit }
     procedure SbtnPesqClick(Sender: TObject);
 
     {}
     function ParentForm(Sender: TWinControl): TWinControl;
+
+    {List}
+    procedure ExitList(Sender: TObject);
 
 
     function GetCount: Integer;
@@ -73,6 +78,12 @@ type
     procedure SetChecked(Index: Integer; const Value: Boolean);
     procedure ClickCheck(Sender: TObject);
     function GetItems: TStrings;
+
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+    procedure ActiveChange(Sender: TObject);
+
   protected
     { Protected declarations }
   public
@@ -167,12 +178,53 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Rsc', [TRscDbSearchCheckListBox]);
+  RegisterComponents('Rsc', [TRscDbCheckListBox]);
 end;
 
 { TRscDbSearchCheckListBox }
 
-procedure TRscDbSearchCheckListBox.ClickCheck(Sender: TObject);
+procedure TRscDbCheckListBox.ActiveChange(Sender: TObject);
+var
+  I:  integer;
+  AForm: TWinControl;
+begin
+
+  AForm :=  ParentForm(FindControl(Self.Handle));
+
+  with  FCheckListBox do
+    begin
+      Parent  :=  AForm;
+      Left          :=  -50;
+      Top           :=  -50;
+      Width         :=  10;
+      Height        :=  10;
+      Visible :=  False;
+      Clear;
+      if Assigned(FFieldDataLink.DataSource) then
+        begin
+          if Count < 1 then
+            begin
+              if FFieldDataLink.Field <>  nil then
+                begin
+                  FFieldDataLink.Field.DataSet.DisableControls;
+                  FFieldDataLink.Field.DataSet.First;
+
+                  while not FFieldDataLink.Field.DataSet.Eof do
+                    begin
+                      I :=  Items.Add(FFieldDataLink.Field.DisplayText);
+                      FFieldDataLink.Field.DataSet.Next;
+                      Checked[I]  :=  False;
+                    end;
+                  FFieldDataLink.Field.DataSet.First;
+                  FFieldDataLink.Field.DataSet.EnableControls;
+                end;
+            end
+          else;
+        end;
+    end;
+end;
+
+procedure TRscDbCheckListBox.ClickCheck(Sender: TObject);
 var
   I: Integer;
 begin
@@ -182,20 +234,31 @@ begin
       if Self.Checked[I] then
         begin
           Self.Text :=  Self.Text + Self.DataFieldSeparador + Self.Items[I];
+          Self.Hint :=  Self.Text;
         end;
     end;
 
   if Assigned(FOnClickCheck) then FOnClickCheck(Self);
 end;
 
-constructor TRscDbSearchCheckListBox.Create(AOwner: TComponent);
+constructor TRscDbCheckListBox.Create(AOwner: TComponent);
 begin
   inherited;
+
   ReadOnly  :=  True;
   DataFieldSeparador :=  ',';
 
+  Self.ShowHint :=  True;
+  Self.Hint :=  Self.Text;
+
+
   FFieldDataLink := TFieldDataLink.Create;
   FFieldDataLink.Control := Self;
+  FFieldDataLink.OnDataChange :=  DataChange;
+  FFieldDataLink.OnEditingChange :=  EditingChange;
+  FFieldDataLink.OnUpdateData :=  UpdateData;
+  FFieldDataLink.OnActiveChange :=  ActiveChange;
+
   try
     FSbtnPesq :=  TSpeedButton.Create(Self);
     with  FSbtnPesq do
@@ -215,55 +278,97 @@ begin
   FCheckListBox :=  TCheckListBox.Create(Self);
   with  FCheckListBox do
     begin
-      Visible :=  False;
-      Left  :=  1;
-      Top   :=  1;
-      Width :=  200;
-      Height  :=  100;
+      Visible       :=  False;
+      Left          :=  -50;
+      Top           :=  -50;
+      Width         :=  10;
+      Height        :=  10;
       OnClickCheck  :=  ClickCheck;
+      OnExit        :=  ExitList;
     end;
 
 end;
 
-destructor TRscDbSearchCheckListBox.Destroy;
+procedure TRscDbCheckListBox.DataChange(Sender: TObject);
+//var
+//  AForm: TWinControl;
 begin
+
+//  AForm :=  ParentForm(FindControl(Self.Handle));
+
+  with  FCheckListBox do
+    begin
+//      Parent  :=  AForm;
+      Visible :=  False;
+    end;
+end;
+
+destructor TRscDbCheckListBox.Destroy;
+begin
+
   FFieldDataLink.Free;
   FFieldDataLink := nil;
   FSbtnPesq.Free;
   inherited;
 end;
 
-function TRscDbSearchCheckListBox.GetChecked(Index: Integer): Boolean;
+procedure TRscDbCheckListBox.EditingChange(Sender: TObject);
+//var
+//  AForm: TWinControl;
+begin
+
+//  AForm :=  ParentForm(FindControl(Self.Handle));
+
+  with  FCheckListBox do
+    begin
+//      Parent  :=  AForm;
+      Visible :=  False;
+    end;
+end;
+
+procedure TRscDbCheckListBox.ExitList(Sender: TObject);
+begin
+  TTask.Run(procedure
+  begin
+    TThread.Queue(nil,
+    procedure
+    begin
+      FCheckListBox.Visible :=  False;
+    end);
+  end);
+end;
+
+function TRscDbCheckListBox.GetChecked(Index: Integer): Boolean;
 begin
   Result  :=  FCheckListBox.Checked[Index];
 end;
 
-function TRscDbSearchCheckListBox.GetCount: Integer;
+function TRscDbCheckListBox.GetCount: Integer;
 begin
   Result  :=  FCheckListBox.Count;
 end;
 
-function TRscDbSearchCheckListBox.GetDataField: string;
+function TRscDbCheckListBox.GetDataField: string;
 begin
   Result := FFieldDataLink.FieldName;
 end;
 
-function TRscDbSearchCheckListBox.GetDataSource: TDataSource;
+function TRscDbCheckListBox.GetDataSource: TDataSource;
 begin
   Result := FFieldDataLink.DataSource;
 end;
 
-function TRscDbSearchCheckListBox.GetItems: TStrings;
+function TRscDbCheckListBox.GetItems: TStrings;
 begin
   Result  :=  FCheckListBox.Items;
 end;
 
-function TRscDbSearchCheckListBox.GetSelected(Index: Integer): Boolean;
+function TRscDbCheckListBox.GetSelected(Index: Integer): Boolean;
 begin
   Result  :=  FCheckListBox.Selected[Index];
 end;
 
-function TRscDbSearchCheckListBox.ParentForm(Sender: TWinControl): TWinControl;
+function TRscDbCheckListBox.ParentForm(Sender: TWinControl): TWinControl;
 begin
   if Sender.Parent is TForm then
     Result  :=  Sender.Parent
@@ -276,7 +381,7 @@ begin
     end;
 end;
 
-procedure TRscDbSearchCheckListBox.SbtnPesqClick(Sender: TObject);
+procedure TRscDbCheckListBox.SbtnPesqClick(Sender: TObject);
 const MargTam = 80;
 var
   I, Altura:  integer;
@@ -290,72 +395,32 @@ begin
       GetWindowRect(TWinControl(Self).Handle, pRect);
       FCheckListBox.Height  :=  0;
 
-        AForm :=  ParentForm(FindControl(WindowHandle));
+        AForm :=  ParentForm(FindControl(Self.Handle));
 
           with  FCheckListBox do
             begin
+              Parent  :=  AForm;
+              if Count < 1 then
+                Exit;
               BorderStyle :=  Self.BorderStyle;
               CharCase  :=  Self.CharCase;
               Font    :=  Self.Font;
-              Parent  :=  AForm;
+
               FHeitCheckListField :=  0;
               heitTxt :=  0;
               Largura :=  200;
-              if Assigned(FFieldDataLink.DataSource) then
-                begin
-                  if Count < 1 then
-                    begin
-                      if FFieldDataLink.Field <>  nil then
-                        begin
-                          FFieldDataLink.Field.DataSet.DisableControls;
-                          FFieldDataLink.Field.DataSet.First;
 
-                          while not FFieldDataLink.Field.DataSet.Eof do
-                            begin
-                              I :=  Items.Add(FFieldDataLink.Field.DisplayText);
-                              FFieldDataLink.Field.DataSet.Next;
-                              Checked[I]  :=  False;
-                              heitTxt :=  ItemHeight;
-                              Inc(FHeitCheckListField, ItemHeight);
-                              if FFieldDataLink.Field.Size  > 200 then
-                                Largura :=  200
-                              else
-                                begin
-                                  if Largura > FFieldDataLink.Field.Size then
-                                    begin
-//                                      if FFieldDataLink.Field.Size < 10 then
-//                                        Largura :=  FFieldDataLink.Field.Size + MargTam
-//                                      else
-                                        Largura :=  FFieldDataLink.Field.Size + MargTam;
-                                    end;
-                                end;
-                            end;
-                          FFieldDataLink.Field.DataSet.First;
-                          FFieldDataLink.Field.DataSet.EnableControls;
-                        end
-                      else
-                        begin
-                          Largura :=  200
-                        end;
-                    end
+              for I := 0 to Count - 1 do
+                begin
+                  heitTxt :=  ItemHeight;
+                  Inc(FHeitCheckListField, ItemHeight);
+                  if FFieldDataLink.Field.Size  > 200 then
+                    Largura :=  200
                   else
                     begin
-                      for I := 0 to Count - 1 do
+                      if Largura > FFieldDataLink.Field.Size then
                         begin
-                          heitTxt :=  ItemHeight;
-                          Inc(FHeitCheckListField, ItemHeight);
-                          if FFieldDataLink.Field.Size  > 200 then
-                            Largura :=  200
-                          else
-                            begin
-                              if Largura > FFieldDataLink.Field.Size then
-                                begin
-//                                  if FFieldDataLink.Field.Size < 10 then
-//                                    Largura :=  FFieldDataLink.Field.Size + MargTam
-//                                  else
-                                    Largura :=  FFieldDataLink.Field.Size + MargTam;
-                                end;
-                            end;
+                          Largura :=  FFieldDataLink.Field.Size + MargTam;
                         end;
                     end;
                 end;
@@ -429,33 +494,32 @@ begin
     end;
 end;
 
-procedure TRscDbSearchCheckListBox.SetChecked(Index: Integer;
+procedure TRscDbCheckListBox.SetChecked(Index: Integer;
   const Value: Boolean);
 begin
   FCheckListBox.Checked[Index]  :=  Value;
 end;
 
-procedure TRscDbSearchCheckListBox.SetCount(const Value: Integer);
+procedure TRscDbCheckListBox.SetCount(const Value: Integer);
 begin
   FCheckListBox.Count :=  Value;
 end;
 
-procedure TRscDbSearchCheckListBox.SetDataField(const Value: string);
+procedure TRscDbCheckListBox.SetDataField(const Value: string);
 begin
   FFieldDataLink.FieldName := Value;
 end;
 
-procedure TRscDbSearchCheckListBox.SetDataFieldSeparador(const Value: char);
+procedure TRscDbCheckListBox.SetDataFieldSeparador(const Value: char);
 begin
   FDataFieldSeparador := Value;
 end;
 
-procedure TRscDbSearchCheckListBox.SetDataSource(const Value: TDataSource);
+procedure TRscDbCheckListBox.SetDataSource(const Value: TDataSource);
 begin
-
   if not (FFieldDataLink.DataSourceFixed and (csLoading in ComponentState)) then
     begin
-      FFieldDataLink.DataSource := Value;
+      FFieldDataLink.DataSource :=  Value;
     end;
 
   if Value <> nil then
@@ -464,15 +528,29 @@ begin
     end;
 end;
 
-procedure TRscDbSearchCheckListBox.SetItems(const Value: TStrings);
+procedure TRscDbCheckListBox.SetItems(const Value: TStrings);
 begin
   FCheckListBox.Items := Value;
 end;
 
-procedure TRscDbSearchCheckListBox.SetSelected(Index: Integer;
+procedure TRscDbCheckListBox.SetSelected(Index: Integer;
   const Value: Boolean);
 begin
   FCheckListBox.Selected[Index] :=  Value;
+end;
+
+procedure TRscDbCheckListBox.UpdateData(Sender: TObject);
+//var
+//  AForm: TWinControl;
+begin
+
+//  AForm :=  ParentForm(FindControl(Self.Handle));
+
+  with  FCheckListBox do
+    begin
+//      Parent  :=  AForm;
+      Visible :=  False;
+    end;
 end;
 
 end.

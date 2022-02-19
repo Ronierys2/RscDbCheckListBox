@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{5E3B232D-01AF-455D-AC8C-475A7E1ADC22}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Demo\DemoRscDbCheckListBox.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Componente\Pacote\RscDbCheckListBox.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DemoRscDbCheckListBox">
+        <MSBuild Projects="Demo\DemoRscDbCheckListBox.dproj"/>
+    </Target>
+    <Target Name="DemoRscDbCheckListBox:Clean">
+        <MSBuild Projects="Demo\DemoRscDbCheckListBox.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DemoRscDbCheckListBox:Make">
+        <MSBuild Projects="Demo\DemoRscDbCheckListBox.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="RscDbCheckListBox">
+        <MSBuild Projects="Componente\Pacote\RscDbCheckListBox.dproj"/>
+    </Target>
+    <Target Name="RscDbCheckListBox:Clean">
+        <MSBuild Projects="Componente\Pacote\RscDbCheckListBox.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="RscDbCheckListBox:Make">
+        <MSBuild Projects="Componente\Pacote\RscDbCheckListBox.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DemoRscDbCheckListBox;RscDbCheckListBox"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DemoRscDbCheckListBox:Clean;RscDbCheckListBox:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DemoRscDbCheckListBox:Make;RscDbCheckListBox:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

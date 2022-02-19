@@ -1,4 +1,4 @@
-program DemoRscDbSearchCheckListBox;
+program DemoRscDbCheckListBox;
 
 uses
   Vcl.Forms,

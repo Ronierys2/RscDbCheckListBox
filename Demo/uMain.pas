@@ -24,15 +24,13 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, uRscDbSearchCheckListBox,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, uRscDbCheckListBox,
   Vcl.StdCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error,
   FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef,
   FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
   FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Menus,
-  Vcl.Grids, Vcl.DBGrids, Vcl.CheckLst, Vcl.ExtCtrls, cxGraphics, cxControls,
-  cxLookAndFeels, cxLookAndFeelPainters, cxContainer, cxEdit, cxCustomListBox,
-  cxCheckListBox, cxDBCheckListBox, uTInject;
+  Vcl.Grids, Vcl.DBGrids, Vcl.CheckLst, Vcl.ExtCtrls, Vcl.DBCtrls;
 
 type
   TForm1 = class(TForm)
@@ -43,21 +41,21 @@ type
     DBGrid1: TDBGrid;
     Panel1: TPanel;
     Label1: TLabel;
-    RscDbSearchCheckListBox1: TRscDbSearchCheckListBox;
     Label2: TLabel;
     SpeedButton1: TSpeedButton;
     FDQCidades: TFDQuery;
     DsCidades: TDataSource;
     FDQClientes: TFDQuery;
     DsClientes: TDataSource;
-    RscDbSearchCheckListBox2: TRscDbSearchCheckListBox;
+    RscDbCheckListBox1: TRscDbCheckListBox;
+    RscDbCheckListBox2: TRscDbCheckListBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
 
   private
     { Private declarations }
-    editchelist: TRscDbSearchCheckListBox;
+    editchelist: TRscDbCheckListBox;
   public
     { Public declarations }
   end;
@@ -91,30 +89,30 @@ var
   I, T: Integer;
 begin
   filtro  :=  EmptyStr;
-  if RscDbSearchCheckListBox1.Count > 0 then
+  if RscDbCheckListBox1.Count > 0 then
     begin
-      for I := 0 to RscDbSearchCheckListBox1.Count - 1 do
+      for I := 0 to RscDbCheckListBox1.Count - 1 do
         begin
-          if RscDbSearchCheckListBox1.Checked[I] then
+          if RscDbCheckListBox1.Checked[I] then
             begin
               if filtro = EmptyStr then
-                filtro  :=  RscDbSearchCheckListBox1.DataField + ' = ''' +  RscDbSearchCheckListBox1.Items[I] + ''''
+                filtro  :=  RscDbCheckListBox1.DataField + ' = ''' +  RscDbCheckListBox1.Items[I] + ''''
               else
-                filtro  :=  filtro  + ' and '  +  RscDbSearchCheckListBox1.DataField + ' = ''' +  RscDbSearchCheckListBox1.Items[I] + '''';
+                filtro  :=  filtro  + ' and '  +  RscDbCheckListBox1.DataField + ' = ''' +  RscDbCheckListBox1.Items[I] + '''';
             end;
         end;
     end;
 
-  if RscDbSearchCheckListBox2.Count > 0 then
+  if RscDbCheckListBox2.Count > 0 then
     begin
-      for T := 0 to RscDbSearchCheckListBox2.Count - 1 do
+      for T := 0 to RscDbCheckListBox2.Count - 1 do
         begin
-          if RscDbSearchCheckListBox2.Checked[T] then
+          if RscDbCheckListBox2.Checked[T] then
             begin
               if filtro = EmptyStr then
-                filtro  :=  RscDbSearchCheckListBox2.DataField + ' = ''' +  RscDbSearchCheckListBox2.Items[T] + ''''
+                filtro  :=  RscDbCheckListBox2.DataField + ' = ''' +  RscDbCheckListBox2.Items[T] + ''''
               else
-                filtro  :=  filtro  + ' and '  +  RscDbSearchCheckListBox2.DataField + ' = ''' +  RscDbSearchCheckListBox2.Items[T] + '''';
+                filtro  :=  filtro  + ' and '  +  RscDbCheckListBox2.DataField + ' = ''' +  RscDbCheckListBox2.Items[T] + '''';
             end;
         end;
     end;
