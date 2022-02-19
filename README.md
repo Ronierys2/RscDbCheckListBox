@@ -5,6 +5,10 @@
 
 #### Componente desenvolvido em Delphi Rio, tendo como clase ancestral "TCustomEdit".
 
+## O Demo do componente esta usando o banco de dados que vem junto aos demos do Rest-dataware:
+
+* [Rest-Dataware](https://github.com/svn2github/rest-dataware)
+
 ## Grupos de Delphi para discusão e compartilhamneto de informações sobre Delphi, Pascal, Lazarus e afins.
 
 * [Grupo no Whatsapp](https://chat.whatsapp.com/KmOB9HQM0JNHtgeU0u1H41)
