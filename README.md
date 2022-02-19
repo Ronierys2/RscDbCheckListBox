@@ -1,4 +1,4 @@
-![GitHub](https://github.com/Ronierys2/RscDbCheckListBox) 
+![GitHub](https://img.shields.io/github/license/Ronierys2/RscDbCheckListBox) 
 ![GitHub repo size](https://img.shields.io/github/repo-size/Ronierys2/RscDbCheckListBox)
 
 # RscDbCheckListBox Componente para desenvolvimento de aplicações VCL
